@@ -1,0 +1,25 @@
+#Connect to EC2 instance from ssh:
+chmod 400 /path_to_key/my_key.pem (make sure your private key file is not publicly viewable)
+ssh -i ~/.ssh/xiaoling-IAM-keypair.pem ubuntu@^C  (Added by Shri)
+ssh -i ~/.ssh/xiaoling-IAM-keypair.pem ubuntu@ec2-52-24-207-226.us-west-2.compute.amazonaws.com
+
+#Install Java
+sudo apt update
+sudo apt install openjdk-8-jdk
+java -version
+
+#Setting java Path
+Many frameworks require you to have the JAVA_HOME variable set - this video shows you how to do it.
+Examples: Flink, Spark.
+
+ubuntu@ip-10-0-0-7:~$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ubuntu@ip-10-0-0-7:~$ echo $JAVA_HOME
+/usr/lib/jvm/java-8-openjdk-amd64
+ubuntu@ip-10-0-0-7:~$ export PATH=$PATH:$JAVA_HOME/bin
+ubuntu@ip-10-0-0-7:~$ echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-openjdk-amd64/bin
+
+
+
+
+
