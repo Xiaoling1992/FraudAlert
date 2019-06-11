@@ -19,6 +19,8 @@ ubuntu@ip-10-0-0-7:~$ export PATH=$PATH:$JAVA_HOME/bin
 ubuntu@ip-10-0-0-7:~$ echo $PATH
 /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-openjdk-amd64/bin
 
+#How to compile the Java file
+./bin/flink run ./examples/batch/WordCount.jar --input /path/to/some/text/data --output /path/to/result
 
 
 
