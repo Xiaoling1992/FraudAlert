@@ -22,8 +22,22 @@ ubuntu@ip-10-0-0-7:~$ echo $PATH
 #Set up the passwordless ssh
 
 #Install Flink, run the Flink UI, run the WordCount.jar
-#How to compile the Java file
+$ cd ~/Downloads        # Go to download directory
+$ tar xzf flink-*.tgz   # Unpack the downloaded archive
+$ cd flink-1.8.0
+$ ./bin/start-cluster.sh  # Start Flink
+$ ./bin/stop-cluster.sh
+
+#Run the WordCount example to test the Flink
+./bin/flink run ./examples/batch/WordCount.jar 
 ./bin/flink run ./examples/batch/WordCount.jar --input /path/to/some/text/data --output /path/to/result
+
+#How to compile my own WordCount file (naive way, put the source file and necessary jar files (lib) in the same folder)
+#I think I need to import the jar files into IntelliJ
+javac -cp .:flink-dist_2.11-1.8.0.jar:log4j-1.2.17.jar:slf4j-log4j12-1.7.15.jar WordCount.java 
+jar -cvf wordCount.jar *.class
+
+
 
 
 
