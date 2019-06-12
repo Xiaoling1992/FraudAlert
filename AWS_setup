@@ -37,6 +37,39 @@ $ ./bin/stop-cluster.sh
 javac -cp .:flink-dist_2.11-1.8.0.jar:log4j-1.2.17.jar:slf4j-log4j12-1.7.15.jar WordCount.java 
 jar -cvf wordCount.jar *.class
 
+1) Install Maven
+sudo apt update
+sudo apt install maven
+mvn -version
+2) Maven Dependencies
+Scala API: To use the Scala API, replace the flink-java artifact id with flink-scala_2.11 and flink-streaming-java_2.11 with flink-streaming-scala_2.11.
+<dependency>
+  <groupId>org.apache.flink</groupId>
+  <artifactId>flink-java</artifactId>
+  <version>1.8.0</version>
+</dependency>
+<dependency>
+  <groupId>org.apache.flink</groupId>
+  <artifactId>flink-streaming-java_2.11</artifactId>
+  <version>1.8.0</version>
+</dependency>
+<dependency>
+  <groupId>org.apache.flink</groupId>
+  <artifactId>flink-clients_2.11</artifactId>
+  <version>1.8.0</version>
+</dependency>
+
+3) Build Flink from source
+git clone https://github.com/apache/flink
+mvn clean install -DskipTests
+mvn clean install -DskipTests -Dfast
+
+
+
+
+scala sbt
+java maven pom to magage the dependencies.
+
 
 
 
