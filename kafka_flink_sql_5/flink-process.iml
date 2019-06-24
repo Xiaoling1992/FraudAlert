@@ -10,6 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="scala-sdk-2.12.7 (2)" level="application" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-java:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-core:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-annotations:1.4.2" level="project" />
@@ -33,16 +34,13 @@
     <orderEntry type="library" name="Maven: net.jpountz.lz4:lz4:1.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.2.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-streaming-scala_2.11:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.flink:flink-streaming-java_2.11:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.flink:flink-shaded-guava:18.0-2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.sling:org.apache.sling.commons.json:2.0.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-scala_2.11:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-reflect:2.11.11" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.11.11" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-compiler:2.11.11" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang.modules:scala-xml_2.11:1.0.5" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang.modules:scala-parser-combinators_2.11:1.0.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.flink:flink-clients_2.11:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.flink:flink-streaming-java_2.11:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-runtime_2.11:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-queryable-state-client-java_2.11:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-hadoop-fs:1.4.2" level="project" />
@@ -62,9 +60,14 @@
     <orderEntry type="library" name="Maven: com.github.scopt:scopt_2.11:3.5.0" level="project" />
     <orderEntry type="library" name="Maven: com.twitter:chill_2.11:0.7.4" level="project" />
     <orderEntry type="library" name="Maven: com.twitter:chill-java:0.7.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.flink:flink-shaded-guava:18.0-2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.sling:org.apache.sling.commons.json:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.flink:flink-clients_2.11:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-optimizer_2.11:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.flink:flink-connector-cassandra_2.11:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-core:3.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.flink:flink-jdbc:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: org.postgresql:postgresql:42.2.2" level="project" />
   </component>
 </module>

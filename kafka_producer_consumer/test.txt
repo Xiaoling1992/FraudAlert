@@ -1,11 +1,2 @@
-a
-b
-c
-d
-e
-f
-f
-e
-d
-e
-d
+hello
+world
