@@ -1,14 +1,17 @@
 # FraudAlert: *"Real-Time Fraud Detection"*
 
-By Xiaoling (Shawn) Zhai at Insight 2019 Summer Data engineering Program in Silicon Valley.
+By Xiaoling (Shawn) Zhai at 2019 Summer Data engineering Program of Insight Data Science (Silicon Valley).
+
+
+
 ![top window](https://github.com/Xiaoling1992/FraudAlert/blob/master/images/xiaoling_demo_small.gif)
 
 ## Project Summary:
-The frauds in credit card transactions cause huge loss to card holders and points of sale. So that this project built a real-time credit card fraud datection and prevention system with throughput as high as 3000 transactions/s and latency as low as 10 ms. A logistic classifier is built in Flink to decide whether a transaction is a fraud or not.
+The frauds in credit card transactions cause huge loss to card holders and points of sale. So that this project built a real-time credit card fraud datection and prevention system with customer's feedback. The throughput can be as high as 3000 transactions/s and latency can be as short as 10 ms. A logistic classifier is built in Flink to decide whether a transaction is a fraud or not.
 
-[**Project Slides**] (http://bit.ly/FraudAlert-Slides)
-[**Demo's Video**] (https://youtu.be/OVy-d31EKtA)
-[**Presentation's Video**] (https://youtu.be/a-F-9T7XXjM)
+[**Project Slides**] (http://bit.ly/FraudAlert-Slides)<br/>
+[**Video of My Demo**] (https://youtu.be/GVvsHnoD9Nc)<br/>
+[**Video of My Presentation**] (https://youtu.be/a-F-9T7XXjM)
 
 ## Introduction:
 
@@ -48,20 +51,20 @@ This detection system has two branches including a streaming processing and a fe
 
 ## Result
 ### Throughput and latency
-Finally, when the throughput is below 2000 transactions per second, the latency time is velow 10 ms. When the throuput inceases to 3000 transactions per second, there are more spikes and the average latency time thus increases.
+When the throughput is below 2000 transactions per second, the latency time is below 10 ms. When the throughput inceases to 3000 transactions per second, there are more spikes and the average latency time thus increases.
 
 ### Accuracy
 The overall accuracy of the logistic regression is 99.93% in the test dataset, higher than the ratio of non-fraud data 99.828%.
-Both the percision and recall of non-fraud is 1.00 and the percision and recall of fraud are 0.79 and 0.78 respectively in the test dataset.
+Both the percision and recall of non-fraud is 1.00 in the test dataset. The percision and recall of fraud are 0.79 and 0.78 respectively in the test dataset.
 
 ## Data Engineering Challenge
 ![arch](images/stress_test.png)
-1. How to find the bottleneck of my pipeline and resolve it:
-   I did stress test to my pipeline to find the bottleneck by increasing the input streaming gradually. I doubled the input streaming to 2000 transactions/s. However, the Flink can only process around 1700 transactions per second thus there were more and more data waiting in kafka and the waiting time (latency) becomed longer and longer. Thus Flink was the bottleneck! I then increased the parallelism of Flink to increase the processing capacity. Finally the pipeline can handle 3000 transactions per socond, the bottleneck problem is resolved!
+1. How to find the bottleneck of my pipeline and resolve it:<br/>
+I did stress test to my pipeline to find the bottleneck by increasing the input streaming gradually. After doubling the input streaming to 2000 transactions/s, since Flink could only process around 1700 transactions per second thus there were more and more data waiting in kafka and the waiting time (latency) becomed longer and longer. Thus Flink was the bottleneck! I then increased the parallelism of Flink to increase the processing capacity. Finally the pipeline can handle 3000 transactions per socond thus the bottleneck problem is resolved!
 
-2. How to Build and train machine learning model in Flink:
-Train the logistic classifier with Python
-Extract the hyper parameters of the well-trained model, weights and intercept
+2. How to Build and train machine learning model in Flink:<br/>
+Train the logistic classifier with Python<br/>
+Extract the hyper parameters of the well-trained model including weights and intercept<br/>
 Build my own logistic model in Flink with the hyper-parameters to make predictions
 
 
