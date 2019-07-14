@@ -25,7 +25,7 @@ The dataset has been collected and analysed during a research collaboration of W
 ## Data Pipeline:
 This detection system has two branches including a streaming processing and a feedback loop.
 ## Architecture
-![arch] (images/pipeline.png)
+![alt text] (https://github.com/Xiaoling1992/FraudAlert/blob/master/images/pipeline.png)
 ### Streaming Processing in Flink
 1. Kafka producers generate input streaming of transactions and sends the data to the topic transactions-foward in Kafka.
 2. Kafka ingests streaming input data and sends to Flink for processing.
@@ -48,7 +48,7 @@ This detection system has two branches including a streaming processing and a fe
 ## Result (Live Demo)
 
 ## Data Engineering Challenge
-![arch] (images/stress_test.png)
+![alt text] (https://github.com/Xiaoling1992/FraudAlert/blob/master/images/stress_test.png)
 
 1. How to find the bottleneck of my pipeline and resolve it:
    I did stress test to my pipeline to find the bottleneck by increasing the input streaming gradually. I doubled the input streaming to 2000 transactions/s. However, the Flink can only process around 1700 transactions per second thus there were more and more data waiting in kafka and the waiting time (latency) becomed longer and longer. Thus Flink was the bottleneck! I then increased the parallelism of Flink to increase the processing capacity. Finally the pipeline can handle 3000 transactions per socond, the bottleneck problem is resolved!
@@ -63,10 +63,10 @@ Build my own logistic model in Flink with the hyper-parameters to make predictio
 ## Version:
 1. Kafka: 1.1.0, scala 2.12,  released on March 28, 2018
 2. Flink: 1.4.2;   scala 2.11  hadoop 2.7, released in 3/2018
-3. PostgreSQL:
-4. Dash:
+3. PostgreSQL: 10.9
+4. Dash: 1.0.1
 5. Hadoop: 2.7
-6. Zookerper: 
+6. Zookerper: 3.4.13
 
 
 
