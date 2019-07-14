@@ -70,13 +70,15 @@ def main():
             transaction[ index_time_processed ]= str( time_processed );
             transaction[ index_latency]= str(latency)
             transaction[ index_reply]= "yes" if index2fraud[index]==1 else "no"
-  
+            #print(index, time_produced, time_processed, latency, transaction[index_reply], waiting_time)
         else:
             time_processed= time_now + max_waiting_time
             latency= time_processed- time_produced        
             transaction[ index_time_processed ]= str( time_processed );
             transaction[ index_latency]= str(latency)
             transaction[ index_reply]= "noreply"
+            #print(index, time_produced, time_processed, latency, transaction[index_reply], waiting_time)
+
             
         try:      
             record_to_insert = (transaction[0],transaction[1],transaction[2],transaction[3],transaction[4],transaction[5],transaction[6],transaction[7],transaction[8],transaction[9],transaction[10],transaction[11],transaction[12],transaction[13],transaction[14],transaction[15],transaction[16],transaction[17],transaction[18],transaction[19],transaction[20],transaction[21],transaction[22],transaction[23],transaction[24],transaction[25],transaction[26],transaction[27],transaction[28],transaction[29],transaction[30],transaction[31],transaction[32],transaction[33],transaction[34],transaction[35], transaction[36],transaction[37])
