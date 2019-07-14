@@ -45,10 +45,18 @@ app = dash.Dash()
 app.layout = html.Div(children=[
     #### 1
     html.Div(  #division 1, the head
-        html.H2('FRAND ALERT: a real-time fraud detection system with feedback!'),
+        html.H2(children='FRAUD ALERT: a real-time fraud detection system with feedback!',
+                style={'textAlign': 'center'}
+                ),
         className = 'banner'
     ),
     #### 2
+    html.Div(  #division 1, the head
+        html.H4(children='Start and Stop the Streaming from Here!'
+                ),
+        className = 'Title'
+    ),
+    
     html.Div(children = [  #division 2, the buttons
         html.Button(
             id = 'startButton',
@@ -93,7 +101,7 @@ app.layout = html.Div(children=[
     #### 3.
     html.Div([  #division 3, the fraud information
         html.Div([
-            html.H3("Customer ID: Phone number")
+            html.H4("Customer ID: Phone Number")
         ], className='Title'),
         html.Div(
             id= 'informationLabel'
@@ -119,7 +127,7 @@ app.layout = html.Div(children=[
         
         html.Button(
             id = 'noanswerButton',
-            children = 'No answer: Reject'
+            children = 'No Answer: Reject'
         ),
         
         html.Div(
@@ -139,21 +147,21 @@ app.layout = html.Div(children=[
     html.Div([
 
         html.Div([
-            html.H3('Transactions per second'),
+            html.H3(children='Transaction Throughput',
+                    style={'textAlign': 'center'}
+                    ),
             dcc.Graph(id='fig_transaction')
         ], style={'width': '48%', 'display': 'inline-block'}),
 
         html.Div([
-            html.H3('Latency'),
+            html.H3(children='Latency',
+                    style={'textAlign': 'center'}
+                    ),
             dcc.Graph(id='fig_latency')
         ], style={'width': '48%', 'align': 'right', 'display': 'inline-block'} )
     ]),
     #division 5, the buttons
     html.Div(children = [
-        html.Button(
-            id = 'tButton',
-            children = '#Transactions'
-        ),
         
         html.Button(
             id = 'tpButton',
@@ -163,10 +171,6 @@ app.layout = html.Div(children=[
         html.Button(
             id = 'fpButton',
             children = '#False Pos.'
-        ),
-
-        html.Div(
-            id = 'tLabel'
         ),
         
         html.Div(
@@ -218,7 +222,7 @@ def secondTrading(n_clicks):
     if n_clicks is not None and n_clicks > 0:
         subprocess.Popen('bash run_random_3.sh', shell=True)
         subprocess.Popen('bash run_random_4.sh', shell=True)
-        return 'Second started!'
+        return 'Second producer started!'
 
 @app.callback(
     Output('thirdLabel', 'children'),  #
@@ -228,7 +232,7 @@ def thirdTrading(n_clicks):
     if n_clicks is not None and n_clicks > 0:
         subprocess.Popen('bash run_random_5.sh', shell=True)
         subprocess.Popen('bash run_random_6.sh', shell=True)
-        return 'Third started!'
+        return 'Third producer started!'
 
 
 
@@ -277,9 +281,9 @@ def updateInformation(n):
             transaction_index= data["index"]
             transaction_number= data["phonenumber"]
             transaction_timeprocessed= data["timeprocessed"]   #The combination is the handle of the transaction to update it later.
-            return data["index"]+":       "+ data["phonenumber"]
+            return "  "+ data["index"]+": \t"+ data["phonenumber"]
         else:
-            return transaction_index+":       "+ transaction_number
+            return "  "+ transaction_index+": \t"+ transaction_number
         
         
 @app.callback(
@@ -343,12 +347,21 @@ def rejectTransaction(n_clicks):
 def updateGraph(n):
     time_now= int( 1000* time.time() )
     connection = psycopg2.connect(host = '10.0.0.4', port='5431', database = 'test_db', user = 'db_select', password = 'password')
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM transactions WHERE timeprocessed< '"+ str(time_now-30000) +"';")  #Delete the early data in the database to make sure we can look up the table quicly. 
+    connection.commit()
+    cursor.close() 
+    
     data = pd.read_sql_query("SELECT COUNT(*), SUM(latency::INTEGER) FROM transactions WHERE timeprocessed > '"+ str(time_now-2000)+ "' AND timeprocessed < '"+ str(time_now -1000) +"'  AND prediction= 'no';", connection)  #There are two classes: prediction='no' is the majority.
-    data = data.to_dict('records')[0]	  #to_dict return the list of dictionary[ {"count": #}, {}
+    connection.close()
+    
+    data = data.to_dict('records')[0]	  #to_dict return the list of dictionary[ {"count": #}, {}    
+    
 
     #maintain time series of stock value and cash value
 
     global run
+    #When the input streaming is more than 100, start to update the graph
     run= ( run or data["count"]>100 )
 
     if run:
@@ -356,14 +369,14 @@ def updateGraph(n):
         
         if data["count"]>100:
             transactions.append( data["count"] )
-            latency.append( data["sum"]/data["count"] )
+            latency.append( data["sum"]/data["count"] )         
         else:
             transactions.append(0)
             latency.append(0)
             
         print(times,  latency, transactions);
         print()
-
+    
 
     trace0 = go.Scatter(
         x = times,
@@ -377,7 +390,7 @@ def updateGraph(n):
     
     layout = dict(
         xaxis = dict(title = 'Elapsed Time (s)'),
-        yaxis = dict(title = '#transactions')
+        yaxis = dict(title = 'Transactions Per Second')
     )
 
     #keep track of elapsed seconds
@@ -404,22 +417,22 @@ def updateGraph(n):
 
     layout = dict(
         xaxis = dict(title = 'Elapsed Time (s)'),
-        yaxis = dict(title = 'latency (ms)')
+        yaxis = dict(title = 'Latency (ms)')
     )
 
     return go.Figure(data = [trace0], layout = layout)
     
-@app.callback(
-    Output('tLabel', 'children'),
-    [Input('tButton','n_clicks')]
-)
-def searchT(n_clicks):
-    if n_clicks is not None and n_clicks > 0:
-        connection = psycopg2.connect(host = '10.0.0.4', port='5431', database = 'test_db', user = 'db_select', password = 'password')
-        data = pd.read_sql_query("SELECT COUNT(*) FROM transactions;", connection)
-        if len(data)>0:
-            data = data.to_dict('records')[0]	  #to_dict return the list of dictionary[ {"count": #}, {}
-            return data["count"]
+#@app.callback(
+    #Output('tLabel', 'children'),
+    #[Input('tButton','n_clicks')]
+#)
+#def searchT(n_clicks):
+    #if n_clicks is not None and n_clicks > 0:
+        #connection = psycopg2.connect(host = '10.0.0.4', port='5431', database = 'test_db', user = 'db_select', password = 'password')
+        #data = pd.read_sql_query("SELECT COUNT(*) FROM transactions;", connection)
+        #if len(data)>0:
+            #data = data.to_dict('records')[0]	  #to_dict return the list of dictionary[ {"count": #}, {}
+            #return data["count"]
 
 @app.callback(
     Output('tpLabel', 'children'),

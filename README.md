@@ -1,6 +1,7 @@
 # FraudAlert: *"Real-Time Fraud Detection"*
 
 By Xiaoling (Shawn) Zhai at Insight 2019 Summer Data engineering Program in Silicon Valley.
+![top window](https://github.com/Xiaoling1992/FraudAlert/blob/master/images/xiaoling_demo_small.gif)
 
 ## Project Summary:
 The frauds in credit card transactions cause huge loss to card holders and points of sale. So that this project built a real-time credit card fraud datection and prevention system with throughput as high as 3000 transactions/s and latency as low as 10 ms. A logistic classifier is built in Flink to decide whether a transaction is a fraud or not.
@@ -24,8 +25,8 @@ The dataset has been collected and analysed during a research collaboration of W
 
 ## Data Pipeline:
 This detection system has two branches including a streaming processing and a feedback loop.
-## Architecture
-![alt text] (https://github.com/Xiaoling1992/FraudAlert/blob/master/images/pipeline.png)
+### Architecture
+![arch](images/pipeline.png)
 ### Streaming Processing in Flink
 1. Kafka producers generate input streaming of transactions and sends the data to the topic transactions-foward in Kafka.
 2. Kafka ingests streaming input data and sends to Flink for processing.
@@ -45,11 +46,16 @@ This detection system has two branches including a streaming processing and a fe
 5. Right window: the latency as a function of elapsed time.
 6. "#True Pos." and "#False Pos." button: report how many transactions are predicted to be frauds correctly, report how many transactions are predicted to be frauds incorrectly.
 
-## Result (Live Demo)
+## Result
+### Throughput and latency
+Finally, when the throughput is below 2000 transactions per second, the latency time is velow 10 ms. When the throuput inceases to 3000 transactions per second, there are more spikes and the average latency time thus increases.
+
+### Accuracy
+The overall accuracy of the logistic regression is 99.93% in the test dataset, higher than the ratio of non-fraud data 99.828%.
+Both the percision and recall of non-fraud is 1.00 and the percision and recall of fraud are 0.79 and 0.78 respectively in the test dataset.
 
 ## Data Engineering Challenge
-![alt text] (https://github.com/Xiaoling1992/FraudAlert/blob/master/images/stress_test.png)
-
+![arch](images/stress_test.png)
 1. How to find the bottleneck of my pipeline and resolve it:
    I did stress test to my pipeline to find the bottleneck by increasing the input streaming gradually. I doubled the input streaming to 2000 transactions/s. However, the Flink can only process around 1700 transactions per second thus there were more and more data waiting in kafka and the waiting time (latency) becomed longer and longer. Thus Flink was the bottleneck! I then increased the parallelism of Flink to increase the processing capacity. Finally the pipeline can handle 3000 transactions per socond, the bottleneck problem is resolved!
 
