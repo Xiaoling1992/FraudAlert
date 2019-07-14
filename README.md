@@ -7,7 +7,7 @@ By Xiaoling (Shawn) Zhai at 2019 Summer Data engineering Program of Insight Data
 ![top window](https://github.com/Xiaoling1992/FraudAlert/blob/master/images/xiaoling_demo_small.gif)
 
 ## Project Summary:
-The frauds in credit card transactions cause huge loss to card holders and points of sale. So that this project built a real-time credit card fraud datection and prevention system with customer's feedback. The throughput can be as high as 3000 transactions/s and latency can be as short as 10 ms. A logistic classifier is built in Flink to decide whether a transaction is a fraud or not.
+This project built a real-time credit card fraud detection system with [**Flink**],[** Kafka**] and [**PostgreSQL**]. A feedback loop is incorporated in the system to receive the answers of customers. The throughput can be as high as 3000 transactions/s and latency can be as short as 10 ms. A logistic classifier is implemented in Flink to decide whether a transaction is a fraud or not.
 
 [**Project Slides**] (http://bit.ly/FraudAlert-Slides)<br/>
 [**Video of My Demo**] (https://youtu.be/GVvsHnoD9Nc)<br/>
@@ -55,7 +55,7 @@ When the throughput is below 2000 transactions per second, the latency time is b
 
 ### Accuracy
 The overall accuracy of the logistic regression is 99.93% in the test dataset, higher than the ratio of non-fraud data 99.828%.
-Both the percision and recall of non-fraud is 1.00 in the test dataset. The percision and recall of fraud are 0.79 and 0.78 respectively in the test dataset.
+Both the percision and recall of non-fraud class are 1.00 in the test dataset. The percision and recall of fraud class are 0.79 and 0.78 respectively in the test dataset.
 
 ## Data Engineering Challenge
 ![arch](images/stress_test.png)
