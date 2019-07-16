@@ -1,15 +1,22 @@
-package com.insight;
+/* 
+ * Define a sink of Flink to PostgreSQL
+ * 
+ * @author Xiaoling (Shawn) Zhai
+ */
 
+
+package com.insight;
 //import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import org.apache.flink.types.Row;
 
-
+/* 
+ * Define a sink of Flink to PostgreSQL
+ */
 public class PostgreSQLSink extends RichSinkFunction< String[] > {
 
     private static final long serialVersionUID = 1L;
@@ -65,7 +72,7 @@ public class PostgreSQLSink extends RichSinkFunction< String[] > {
     };
 
     /**
-     * close()是tear down的方法，在销毁时执行，关闭连接。
+     * close() is the mothod of tear down，it is executed to turn off the connection
      */
     @Override
     public void close() throws Exception {

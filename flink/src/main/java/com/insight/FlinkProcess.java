@@ -1,4 +1,13 @@
-//Read data from kafka and write to postgresql
+/* Predict whether a transaction in streaming is a fraud or not. Then send the transaction to PostgreSQL or Kafka. 
+ * 
+ * 1. The flink job receive the streaming from kafka topic "transactions-forward", 
+ * 2. Then the logistic classifier map each transaction to its prediction: 
+ *    yes (fraud) or no (non-fraud). 
+ * 3. If the prediction is no, the transaction data is sent to PostgreSQL; 
+ *    otherwise, the data is sent to the topic "transactions-backward" in Kafka.
+ * 
+ * @author Xiaoling (Shawn) Zhai
+ */
 
 package com.insight;
 
@@ -38,11 +47,19 @@ import org.apache.flink.api.java.tuple.*;
 /*Read the data stream from topic transactions-forward in Kafka, make predictions with logistic classificiation, then write the data stream to PostgreSQL;
  *If the prediction is fraud, compress the data to string and write to Kafka topic transactions-backward. The user simulater will give the true label of
  * the transaction, and update the data in PostgreSQL
+ * 
+ * The input is the dataStreaming of String from Kafka
  */
-
-
 public class FlinkProcess {
+    
+    // *************************************************************************
+	// PROGRAM
+	// *************************************************************************
     public static void main(String[] args) throws Exception {
+        
+        // **************************************************
+        // Parameters of logistic regression
+        // **************************************************
         double[] w30= new double[]{      //The x^T w+ b, prediction the classification 0,1,2..29
                 -0.30989978,  0.07340665, -0.00070422,  0.01139284,  0.53738595,
                 0.07076653, -0.05718759, -0.03139225, -0.16933235, -0.1310537 ,
@@ -51,30 +68,34 @@ public class FlinkProcess {
                 -0.1440509 ,  0.15047008,  0.0355463 ,  0.004384  ,  0.06221661,
                 -0.13903214,  0.00915609, -0.09659167,  0.0929125 ,  0.06944448};
         double b= -6.78630449;
-
-        // create execution environment
+        
+        // **************************************************
+        // create execution environment, and create the connection to Kafka
+        // **************************************************
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         // configure event-time characteristics
         //env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         // generate a Watermark every second
         //env.getConfig().setAutoWatermarkInterval(1000);
 
-        // create new property of Flink
-        // set Zookeeper and Kafka url
+        // create new property of Flink, set Zookeeper and Kafka url
         Properties properties = new Properties();
         properties.setProperty("zookeeper.connect", "ec2-34-218-113-11.us-west-2.compute.amazonaws.com:2181,ec2-35-161-124-47.us-west-2.compute.amazonaws.com:2181,ec2-52-34-133-46.us-west-2.compute.amazonaws.com:2181");
         properties.setProperty("bootstrap.servers", "ec2-34-218-113-11.us-west-2.compute.amazonaws.com:9092,ec2-35-161-124-47.us-west-2.compute.amazonaws.com:9092,ec2-52-34-133-46.us-west-2.compute.amazonaws.com:9092");
         properties.setProperty("group.id", "myGroup");                 // Consumer group ID
         //properties.setProperty("auto.offset.reset", "earliest");       // Always read topic from start
 
-        // read 'topic' from Kafka producer: Kafka topic is "wikiInput"
+        // read 'topic' from Kafka producer: Kafka topic is "transactions-forward"
         FlinkKafkaConsumer010<String> kafkaConsumer = new FlinkKafkaConsumer010<>("transactions-forward",
                 new SimpleStringSchema(), properties);
 
         // convert kafka stream to data stream
         DataStream<String> rawInputStream = env.addSource(kafkaConsumer);
-
-        //Tranfrom: string -> Row*****************************
+        
+        // **************************************************
+        //Tranfrom: String -> String[]
+        // **************************************************
+        
         DataStream< String[] > transformStream= rawInputStream.map(new MapFunction<String, String[]>() {
             @Override
             public String[] map(String value) {
@@ -85,7 +106,6 @@ public class FlinkProcess {
                 long timeProduced = Long.parseLong( inputs[33] );
                 long timeProcessed = System.currentTimeMillis();
                 int latency = (int) ( timeProcessed - timeProduced);
-                //System.out.println("The latency is"+ latency );
 
                 for (int i = 0; i <= 37; ++i) {
                     if (i <= 2) {
@@ -109,21 +129,23 @@ public class FlinkProcess {
                     else if (i == 36) {
                         weightedSum+= b;
                         if (weightedSum > 0) {
-                            row[i]= "yes";
+                            row[i]= "yes";  //fraud
                         }
-                        else {
-                            row[i]="no";
+                        else { 
+                            row[i]="no";    //non-fraud
                         }
                     }
                     else{
-                        row[i]="noreply";//reply of constomer
+                        row[i]="noreply";    //no reply from customers
                     }
                 }
                 return row;
             }
         } );
-
-        //Sink: to postgresql ****************************************
+        
+        // **************************************************
+        //Sink: nonfraud to postgresql, fraud to "transactions-backward" in Kafka 
+        // **************************************************        
         DataStream< String[] > nonFraudStream= transformStream.filter( new FilterFunction< String[] >() {
             @Override
             public boolean filter( String[] row ) throws Exception{
@@ -132,14 +154,15 @@ public class FlinkProcess {
         });
 
 
-        //filter these fraud data and send it back to Kafka
+        //use filter to pick up these fraud data and send it back to Kafka
         DataStream< String[] > fraudStream= transformStream.filter( new FilterFunction< String[] >() {
             @Override
             public boolean filter( String[] row ) throws Exception{
                 return (row[36]=="yes");
             }
         });
-
+        
+        //use filter to pick up these non-fraud data and send it to PostgreSQL
         DataStream<String> strFraudStream = fraudStream.map(new MapFunction<String[], String>(){
             @Override
             public String map(String[] row) {
@@ -152,13 +175,14 @@ public class FlinkProcess {
                 return stringBuilder.toString();
             }
         } );
-
+        
+        //Send the fraud to kafka
         FlinkKafkaProducer010<String> myProducer= new FlinkKafkaProducer010<String>(
                 "ec2-34-218-113-11.us-west-2.compute.amazonaws.com:9092,ec2-35-161-124-47.us-west-2.compute.amazonaws.com:9092,ec2-52-34-133-46.us-west-2.compute.amazonaws.com:9092",
                 "transactions-backward",
                 new SimpleStringSchema() );
 
-
+        //Send the non-fraud to PostgreSQL
         nonFraudStream.addSink(new PostgreSQLSink() );
         strFraudStream.addSink(myProducer);
 

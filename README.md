@@ -7,8 +7,9 @@ By Xiaoling (Shawn) Zhai at 2019 Summer Data engineering Program of Insight Data
 ![top window](https://github.com/Xiaoling1992/FraudAlert/blob/master/images/xiaoling_demo_small.gif)
 
 ## Project Summary:
-This project built a real-time credit card fraud detection system with [**Flink**],[** Kafka**] and [**PostgreSQL**]. A feedback loop is incorporated in the system to receive the answers of customers. The throughput can be as high as 3000 transactions/s and latency can be as short as 10 ms. A logistic classifier is implemented in Flink to decide whether a transaction is a fraud or not.
+This project built a real-time credit card fraud detection system with [**Flink**],[**Kafka**] and [**PostgreSQL**]. A feedback loop is incorporated in the system to receive the answers of customers. The throughput can be as high as 3000 transactions/s and latency can be as short as 10 ms. A logistic classifier is implemented in Flink to decide whether a transaction is a fraud or not.
 
+[**Project Website**] (dataengineer.club) 
 [**Project Slides**] (http://bit.ly/FraudAlert-Slides)<br/>
 [**Video of My Demo**] (https://youtu.be/GVvsHnoD9Nc)<br/>
 [**Video of My Presentation**] (https://youtu.be/a-F-9T7XXjM)
